@@ -67,30 +67,62 @@ button{
 </div>
 
 <script>
-function makeCode(){
-  const device = document.getElementById("device").value.trim().toUpperCase();
 
-  if(!device){
-    alert("أدخل رقم الجهاز");
-    return;
-  }
-
-  let hash = 2166136261;
-
-  for(let i=0;i<device.length;i++){
-    hash ^= device.charCodeAt(i);
-    hash = Math.imul(hash,16777619);
-  }
-
-  hash >>>= 0;
-
-  const part1 = hash.toString(16).toUpperCase().padStart(8,"0");
-  const part2 = device.replace(/[^A-Z0-9]/g,"").slice(-4).padStart(4,"0");
-
-  const code = "AK-" + part1.slice(0,4) + "-" + part1.slice(4) + "-" + part2;
-
-  document.getElementById("result").textContent = code;
+  function hash32(s){
+ let h=2166136261;
+ for(let i=0;i<s.length;i++){
+  h^=s.charCodeAt(i);
+  h=Math.imul(h,16777619);
+ }
+ return (h>>>0).toString(16).toUpperCase();
 }
+
+const LICENSE_SECRET="ABUKHALID-TRB-2026-X7";
+
+function codeFor(dev,period){
+ return (hash32(LICENSE_SECRET+"|"+dev+"|"+period)+"-"+hash32(period+"|"+dev+"|"+LICENSE_SECRET)).slice(0,17);
+}
+
+function currentQuarter(d=new Date()){
+ return d.getFullYear()+"Q"+(Math.floor(d.getMonth()/3)+1);
+}
+
+function makeCode(){
+ const device=document.getElementById("device").value.trim().toUpperCase();
+
+ if(!device){
+  alert("أدخل رقم الجهاز");
+  return;
+ }
+
+ let period=currentQuarter(new Date());
+
+ let code=codeFor(device,period);
+
+ document.getElementById("result").textContent=code;
+}
+
+  
+    
+
+  
+
+  
+
+  
+    
+    
+  
+
+  
+
+  
+  
+
+  
+
+  
+
 </script>
 
 </body>
